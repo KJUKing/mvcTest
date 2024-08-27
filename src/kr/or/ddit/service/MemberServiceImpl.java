@@ -11,9 +11,19 @@ import java.util.Map;
 public class MemberServiceImpl implements IMemberService{
 
     private IMemberDao dao;
+    private static MemberServiceImpl service;
 
-    public MemberServiceImpl() {
-        dao = new MemberDaoImpl();
+    //생성자가있을때는 접근제한자만 public에서 private로 바꿔주자
+    private MemberServiceImpl() {
+//        dao = new MemberDaoImpl();
+        dao = MemberDaoImpl.getInstance();
+    }
+
+    public static MemberServiceImpl getInstance() {
+        if(service == null) {
+            service = new MemberServiceImpl();
+        }
+        return service;
     }
     @Override
     public int insertMember(MemberVO memVo) {

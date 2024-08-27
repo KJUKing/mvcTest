@@ -12,9 +12,14 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class MemberController {
-    private IMemberService service = new MemberServiceImpl(); // 서비스객체가 저장될 변수 선언
-    private Scanner scan = new Scanner(System.in);
-
+    private IMemberService service;
+    private Scanner scan;
+//    service =MemberServiceImpl(); // 서비스객체가 저장될 변수 선언
+    
+    public MemberController() {
+        scan = new Scanner(System.in);
+        service = MemberServiceImpl.getInstance();
+    }
     public static void main(String[] args) {
         new MemberController().startMember();
     }

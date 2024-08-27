@@ -2,6 +2,7 @@ package kr.or.ddit.dao;
 
 import kr.or.ddit.util.DBUtil;
 import kr.or.ddit.vo.MemberVO;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,9 +14,27 @@ import java.util.List;
 import java.util.Map;
 
 public class MemberDaoImpl implements IMemberDao{
+
+    private static Logger logger = Logger.getLogger(MemberDaoImpl.class);
+    //1번
+    private static MemberDaoImpl dao;
+
+    //2번 기본생성자 private생성
+
+    private MemberDaoImpl() {
+    }
+
+    public static MemberDaoImpl getInstance() {
+        if (dao == null) {
+            dao = new MemberDaoImpl();
+        }
+        return dao;
+    }
+
     @Override
     public int insertMember(MemberVO memVo) {
         Connection conn = null;
+        logger.debug("Connection 객체 생성");
         PreparedStatement pstmt = null;
         int cnt = 0; //반환값이 저장될 변수
 
@@ -30,16 +49,26 @@ public class MemberDaoImpl implements IMemberDao{
             pstmt.setString(3, memVo.getMem_name());
             pstmt.setString(4, memVo.getMem_tel());
             pstmt.setString(5, memVo.getMem_addr());
+
+            logger.debug("PreparedStatement 객체 생성");
+            logger.debug("실행 sql 문 : " + sql);
+            logger.debug("사용 데이터 : " + memVo.getMem_id() + " , " +
+                    memVo.getMeme_pass() + " , " + memVo.getMem_name() + " , " +
+                    memVo.getMem_tel() + " , " + memVo.getMem_addr());
             cnt = pstmt.executeUpdate();
+            logger.info("작업 성공");
 
         }catch (SQLException e) {
+            logger.error("insert 작업 실패");
             e.printStackTrace();
         }finally {
             if (pstmt != null) try {
                 pstmt.close();
+                logger.info("PreparedStatement객체 반납");
             } catch (SQLException e) {
             };
             if (conn != null) try {
+                logger.info("Connection객체 반납");
                 conn.close();
             } catch (SQLException e) {
             };
